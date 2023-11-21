@@ -24,19 +24,18 @@ spec:
           containerPort: 80
           hostPort: 8080
           protocol: TCP
-        startupProbe:
-          httpGet:
-            scheme: HTTP
-            port: 80
-            path: /
-          successThreshold: 1
-          failureThreshold: 3
-          initialDelaySeconds: 10
         livenessProbe:
-          httpGet:
-            scheme: HTTP
-            port: 80
-            path: /no/such/resources
+          exec:
+            command:
+            - sh
+            - -c
+            - curl -sf http://localhost:80 || kill 1
           successThreshold: 1
           failureThreshold: 3
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 256Mi
